@@ -1,0 +1,19 @@
+.venv/
+.env
+__pycache__/
+*.py[cod]
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.tmp
+
+# Generated weather icons/cache
+assets/icons/*
