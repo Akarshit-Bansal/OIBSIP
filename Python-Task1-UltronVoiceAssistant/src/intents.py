@@ -14,43 +14,56 @@ def detect_intent(text):
 
     text = text.lower().strip()
 
-    # Greeting
-    greeting_patterns = [
-        r"\bhello\b",
-        r"\bhi\b",
-        r"\bhey\b",
-        r"\bgood morning\b",
-        r"\bgood afternoon\b",
-        r"\bgood evening\b",
+    # ---------------------------------------------------------
+    # Exit
+    # ---------------------------------------------------------
+    exit_patterns = [
+        r"\bexit\b",
+        r"\bquit\b",
+        r"\bgoodbye\b",
+        r"\bgood bye\b",
+        r"\bstop listening\b",
+        r"\bstop\b",
     ]
 
-    if any(re.search(pattern, text) for pattern in greeting_patterns):
-        return "greeting", {}
+    if any(re.search(pattern, text) for pattern in exit_patterns):
+        return "exit", {}
 
-    # Current time
-    time_patterns = [
-        r"\bwhat time is it\b",
-        r"\bcurrent time\b",
-        r"\btell me the time\b",
-        r"\btime right now\b",
+        # ---------------------------------------------------------
+    # Reminder
+    # ---------------------------------------------------------
+    reminder_patterns = [
+        r"\bremind me in (\d+)\s*(seconds?|minutes?|hours?)\s*(?:to\s+)?(.+)",
+        r"\bset a reminder in (\d+)\s*(seconds?|minutes?|hours?)\s*(?:to\s+)?(.+)",
     ]
 
-    if any(re.search(pattern, text) for pattern in time_patterns):
-        return "time", {}
+    for pattern in reminder_patterns:
+        match = re.search(pattern, text)
 
-    # Current date
-    date_patterns = [
-        r"\bwhat is today's date\b",
-        r"\bwhat's today's date\b",
-        r"\btoday's date\b",
-        r"\bcurrent date\b",
-        r"\bwhat date is it\b",
-    ]
+        if match:
+            amount = int(match.group(1))
+            unit = match.group(2)
+            message = match.group(3).strip()
 
-    if any(re.search(pattern, text) for pattern in date_patterns):
-        return "date", {}
+            if unit.startswith("second"):
+                delay_seconds = amount
 
+            elif unit.startswith("minute"):
+                delay_seconds = amount * 60
+
+            elif unit.startswith("hour"):
+                delay_seconds = amount * 60 * 60
+
+            else:
+                delay_seconds = amount
+
+            return "reminder", {
+                "message": message,
+                "delay_seconds": delay_seconds,
+            }
+    # ---------------------------------------------------------
     # Web search
+    # ---------------------------------------------------------
     search_patterns = [
         r"\bsearch the web for (.+)",
         r"\bsearch the web (.+)",
@@ -71,17 +84,79 @@ def detect_intent(text):
                 "query": query
             }
 
-    # Exit
-    exit_patterns = [
-        r"\bexit\b",
-        r"\bquit\b",
-        r"\bgoodbye\b",
-        r"\bgood bye\b",
-        r"\bstop listening\b",
-        r"\bstop\b",
+    # ---------------------------------------------------------
+    # Weather
+    # ---------------------------------------------------------
+    weather_patterns = [
+        r"\bwhat is the weather\b(?: today)?(?: in (.+))?",
+        r"\bwhat's the weather\b(?: today)?(?: in (.+))?",
+        r"\bweather today\b(?: in (.+))?",
+        r"\bweather\b(?: in (.+))?",
+        r"\btemperature\b(?: today)?(?: in (.+))?",
+        r"\bwhat is the temperature\b(?: today)?(?: in (.+))?",
     ]
 
-    if any(re.search(pattern, text) for pattern in exit_patterns):
-        return "exit", {}
+    for pattern in weather_patterns:
+        match = re.search(pattern, text)
+
+        if match:
+            city = None
+
+            if match.lastindex and match.group(match.lastindex):
+                city = match.group(match.lastindex).strip()
+
+            return "weather", {
+                "city": city
+            }
+
+    # ---------------------------------------------------------
+    # Current time
+    # ---------------------------------------------------------
+    time_patterns = [
+        r"\bwhat time is it\b",
+        r"\bwhat is the time\b",
+        r"\bwhat's the time\b",
+        r"\bcurrent time\b",
+        r"\btell me the time\b",
+        r"\btime right now\b",
+        r"\bwhat time\b",
+    ]
+
+    if any(re.search(pattern, text) for pattern in time_patterns):
+        return "time", {}
+
+    # ---------------------------------------------------------
+    # Current date
+    # ---------------------------------------------------------
+    date_patterns = [
+        r"\bwhat is today's date\b",
+        r"\bwhat's today's date\b",
+        r"\bwhat is the date today\b",
+        r"\bwhat's the date today\b",
+        r"\btoday's date\b",
+        r"\bdate today\b",
+        r"\bcurrent date\b",
+        r"\bwhat date is it\b",
+        r"\btell me the date\b",
+        r"\btell me today's date\b",
+    ]
+
+    if any(re.search(pattern, text) for pattern in date_patterns):
+        return "date", {}
+
+    # ---------------------------------------------------------
+    # Greeting
+    # ---------------------------------------------------------
+    greeting_patterns = [
+        r"^\s*hello\s*(?:ultron)?\s*$",
+        r"^\s*hi\s*(?:ultron)?\s*$",
+        r"^\s*hey\s*(?:ultron)?\s*$",
+        r"^\s*good morning\s*(?:ultron)?\s*$",
+        r"^\s*good afternoon\s*(?:ultron)?\s*$",
+        r"^\s*good evening\s*(?:ultron)?\s*$",
+    ]
+
+    if any(re.search(pattern, text) for pattern in greeting_patterns):
+        return "greeting", {}
 
     return "unknown", {}

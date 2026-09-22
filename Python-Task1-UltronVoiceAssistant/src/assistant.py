@@ -11,8 +11,9 @@ class UltronAssistant:
             microphone_index=microphone_index
         )
 
-        self.commands = CommandHandler()
-
+        self.commands = CommandHandler(
+   	   speak_callback=self.speech.speak
+)
         self.running = True
 
     def run(self):

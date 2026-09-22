@@ -6,13 +6,12 @@ def main():
     handler = CommandHandler()
 
     test_commands = [
-        "hello Ultron",
-        "what time is it",
-        "what is today's date",
-        "goodbye",
-        "search for Python FastAPI tutorials",
-        "tell me something interesting",
-    ]
+        "hello Ultron what time is it",
+	"tell me the date today",
+	"tell me what is the weather today",
+	"what is the weather in Delhi",
+	"remind me in 10 seconds to drink water",
+]
 
     for command in test_commands:
         print(f"\nUser: {command}")
