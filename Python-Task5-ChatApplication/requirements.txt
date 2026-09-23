@@ -1,0 +1,14 @@
+# Task 5 uses Python standard-library modules.
+# No third-party packages are required.# OIBSIP Task 5 - Chat Application
+
+# No third-party packages are required.
+
+# Python standard library modules used:
+# tkinter
+# socket
+# threading
+# sqlite3
+# hashlib
+# secrets
+# json
+# datetime
